@@ -238,6 +238,8 @@ def train_all_inprocess(symbols):
             if len(df_train) < 1000 or len(df_test) < 50:
                 continue
 
+            MAX_TRAIN_ROWS = 300_000   # cap to prevent OOM on 7.9GB RAM
+
             def _prep(df_split):
                 clean   = df_split.dropna(subset=["target_dir", "target_price"])
                 X       = clean[feature_cols].replace([np.inf, -np.inf], np.nan)
@@ -247,6 +249,12 @@ def train_all_inprocess(symbols):
 
             X_train, y_dir_train, y_price_train = _prep(df_train)
             X_test,  y_dir_test,  y_price_test  = _prep(df_test)
+
+            # Cap training rows — use most recent data (tail) for best signal
+            if len(X_train) > MAX_TRAIN_ROWS:
+                X_train      = X_train.iloc[-MAX_TRAIN_ROWS:]
+                y_dir_train  = y_dir_train.iloc[-MAX_TRAIN_ROWS:]
+                y_price_train= y_price_train.iloc[-MAX_TRAIN_ROWS:]
 
             if len(X_train) < 500 or len(X_test) < 20:
                 continue
