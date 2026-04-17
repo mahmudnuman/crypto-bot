@@ -72,10 +72,19 @@
       "n_train": 255000,
       "n_test": 4032,
       "duration_s": 477.3
+    },
+    {
+      "fold": 8,
+      "train_acc": 0.5662,
+      "test_acc": 0.5211,
+      "mape": 0.2189,
+      "n_train": 255000,
+      "n_test": 4032,
+      "duration_s": 483.9
     }
   ],
   "best_acc": 0.5268,
   "best_fold": -1,
-  "elapsed": 4118.2,
-  "updated_at": "2026-04-18T04:33:21.627714"
+  "elapsed": 4635.1,
+  "updated_at": "2026-04-18T04:41:58.568000"
 }
