@@ -1,5 +1,5 @@
 {
-  "status": "in_progress",
+  "status": "done",
   "folds": [
     {
       "fold": 0,
@@ -90,10 +90,18 @@
       "n_train": 255000,
       "n_test": 4032,
       "duration_s": 472.1
+    },
+    {
+      "fold": 10,
+      "train_acc": 0.5714,
+      "test_acc": 0.5198,
+      "mape": 0.036,
+      "n_train": 255000,
+      "n_test": 4032,
+      "duration_s": 499.9
     }
   ],
   "best_acc": 0.5268,
-  "best_fold": -1,
-  "elapsed": 5141.8,
-  "updated_at": "2026-04-18T04:50:25.222874"
+  "elapsed": 5684.0,
+  "done_at": "2026-04-18T04:59:28.166683"
 }
