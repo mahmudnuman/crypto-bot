@@ -259,31 +259,35 @@ def train_all_inprocess(symbols):
             y_val_dir   = y_dir_train.iloc[val_split:]
             y_val_price = y_price_train.iloc[val_split:]
 
-            model = DualHeadEnsemble(symbol)
+            model    = DualHeadEnsemble(symbol)
+            fold_t0  = time.time()   # ← fold timer start
             try:
                 model.fit(X_tr, y_tr_dir, y_tr_price,
                           X_val_raw=X_val, y_val_dir=y_val_dir, y_val_price=y_val_price)
 
-                tr_m   = model.evaluate(X_tr,    y_tr_dir,    y_tr_price)
-                test_m = model.evaluate(X_test,  y_dir_test,  y_price_test)
+                tr_m      = model.evaluate(X_tr,   y_tr_dir,   y_tr_price)
+                test_m    = model.evaluate(X_test, y_dir_test, y_price_test)
+                fold_secs = round(time.time() - fold_t0, 1)   # ← fold duration
 
                 fold_data = {
-                    "fold":      fold_idx,
-                    "train_acc": round(tr_m["accuracy"], 4),
-                    "test_acc":  round(test_m["accuracy"], 4),
-                    "mape":      round(float(test_m["mape"]) if str(test_m["mape"]) != "nan" else 0, 4),
-                    "n_train":   len(X_tr),
-                    "n_test":    len(X_test),
+                    "fold":       fold_idx,
+                    "train_acc":  round(tr_m["accuracy"], 4),
+                    "test_acc":   round(test_m["accuracy"], 4),
+                    "mape":       round(float(test_m["mape"]) if str(test_m["mape"]) != "nan" else 0, 4),
+                    "n_train":    len(X_tr),
+                    "n_test":     len(X_test),
+                    "duration_s": fold_secs,   # ← time taken for this fold
                 }
                 fold_results.append(fold_data)
 
                 logger.info(
                     f"  [{symbol}] Fold {fold_idx:02d}/{total_folds-1} "
                     f"train={tr_m['accuracy']:.3f} test={test_m['accuracy']:.3f} "
-                    f"mape={test_m['mape']:.3f}"
+                    f"mape={test_m['mape']:.3f} time={fold_secs/60:.1f}min"
                 )
                 print(f"      Fold {fold_idx:02d}/{total_folds-1} | "
-                      f"train={tr_m['accuracy']:.3f} test={test_m['accuracy']:.3f}", flush=True)
+                      f"train={tr_m['accuracy']:.3f} test={test_m['accuracy']:.3f} "
+                      f"({fold_secs/60:.1f}min)", flush=True)
 
                 # Track best model
                 if test_m["accuracy"] > best_acc:
