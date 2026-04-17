@@ -1,0 +1,50 @@
+# ── CryptoPredictBot .gitignore ─────────────────────────────────────
+
+# Raw market data (large binary files — re-downloadable)
+data/raw/
+*.parquet
+
+# Feature cache (re-buildable in 30 min)
+cache/features/
+cache/checkpoints/*.pkl
+
+# Trained model files (large — use Git LFS if needed)
+saved_models/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Environments
+.env
+.venv
+env/
+venv/
+
+# Logs (keep small summary, ignore big logs)
+cache/*.txt
+cache/*.json
+!cache/training_report.json
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Test artifacts
+test_ensemble.py

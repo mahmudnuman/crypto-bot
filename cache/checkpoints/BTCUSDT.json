@@ -1,0 +1,33 @@
+{
+  "status": "in_progress",
+  "folds": [
+    {
+      "fold": 0,
+      "train_acc": 0.5745,
+      "test_acc": 0.5193,
+      "mape": 0.0159,
+      "n_train": 286926,
+      "n_test": 4032
+    },
+    {
+      "fold": 1,
+      "train_acc": 0.574,
+      "test_acc": 0.5226,
+      "mape": 0.0067,
+      "n_train": 301614,
+      "n_test": 4032
+    },
+    {
+      "fold": 2,
+      "train_acc": 0.5746,
+      "test_acc": 0.5236,
+      "mape": 0.2218,
+      "n_train": 316302,
+      "n_test": 4032
+    }
+  ],
+  "best_acc": 0.5236,
+  "best_fold": 2,
+  "elapsed": 2047.1,
+  "updated_at": "2026-04-17T21:44:13.180779"
+}
