@@ -48,10 +48,18 @@
       "mape": 0.3171,
       "n_train": 360366,
       "n_test": 4032
+    },
+    {
+      "fold": 6,
+      "train_acc": 0.5698,
+      "test_acc": 0.5052,
+      "mape": 0.3507,
+      "n_train": 375054,
+      "n_test": 4032
     }
   ],
   "best_acc": 0.5236,
   "best_fold": -1,
-  "elapsed": 3935.0,
-  "updated_at": "2026-04-18T00:20:20.062937"
+  "elapsed": 4678.2,
+  "updated_at": "2026-04-18T00:32:43.215044"
 }
