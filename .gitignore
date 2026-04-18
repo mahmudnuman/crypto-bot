@@ -8,8 +8,8 @@ data/raw/
 cache/features/
 cache/checkpoints/*.pkl
 
-# Trained model files (large — use Git LFS if needed)
-saved_models/
+# saved_models/ — intentionally tracked so Kaggle models sync to local PC via git pull
+# (each model ~4MB × 25 coins = ~100MB total — within GitHub limits)
 
 # Python
 __pycache__/
