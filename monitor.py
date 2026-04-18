@@ -269,6 +269,7 @@ def build_rich_layout():
     return header, progress, gpu_panel, fold_tbl, done_tbl, prog_tbl
 
 
+
 def main():
     if not HAS_RICH:
         while True:
@@ -277,26 +278,34 @@ def main():
         return
 
     console = Console()
-    with Live(console=console, refresh_per_second=0.2, screen=True) as live:
-        while True:
-            try:
-                header, progress, gpu_panel, fold_tbl, done_tbl, prog_tbl = build_rich_layout()
+    print("  Monitor starting... (Ctrl+C to stop)\n")
 
-                layout = Layout()
-                layout.split_column(
-                    Layout(header,                          name="hdr",  size=3),
-                    Layout(Columns([progress, gpu_panel]),  name="top",  size=8),
-                    Layout(fold_tbl,                        name="fold", ratio=3),
-                    Layout(Columns([done_tbl, prog_tbl]),   name="bot",  ratio=2),
-                )
-                live.update(layout)
-                time.sleep(REFRESH)
+    while True:
+        try:
+            header, progress, gpu_panel, fold_tbl, done_tbl, prog_tbl = build_rich_layout()
 
-            except KeyboardInterrupt:
-                console.print("\n[yellow]Monitor stopped.[/yellow]")
-                break
-            except Exception as e:
-                time.sleep(REFRESH)
+            layout = Layout()
+            layout.split_column(
+                Layout(header,                          name="hdr",  size=3),
+                Layout(Columns([progress, gpu_panel]),  name="top",  size=8),
+                Layout(fold_tbl,                        name="fold", ratio=3),
+                Layout(Columns([done_tbl, prog_tbl]),   name="bot",  ratio=2),
+            )
+
+            # Clear screen and reprint — avoids rich screen=True freeze
+            os.system("cls" if os.name == "nt" else "clear")
+            console.print(layout)
+            print(f"\n  [Refreshes every {REFRESH}s — Ctrl+C to stop]", flush=True)
+            time.sleep(REFRESH)
+
+        except KeyboardInterrupt:
+            console.print("\n[yellow]Monitor stopped.[/yellow]")
+            break
+        except Exception as e:
+            # Show error instead of silently swallowing it
+            os.system("cls" if os.name == "nt" else "clear")
+            print(f"  Render error: {e} — retrying in {REFRESH}s...", flush=True)
+            time.sleep(REFRESH)
 
 
 if __name__ == "__main__":
