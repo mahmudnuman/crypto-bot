@@ -1,5 +1,5 @@
 {
-  "status": "in_progress",
+  "status": "done",
   "folds": [
     {
       "fold": 0,
@@ -81,10 +81,27 @@
       "n_train": 255000,
       "n_test": 4032,
       "duration_s": 484.0
+    },
+    {
+      "fold": 9,
+      "train_acc": 0.5721,
+      "test_acc": 0.5198,
+      "mape": 0.0186,
+      "n_train": 255000,
+      "n_test": 4032,
+      "duration_s": 490.4
+    },
+    {
+      "fold": 10,
+      "train_acc": 0.5475,
+      "test_acc": 0.526,
+      "mape": 0.086,
+      "n_train": 255000,
+      "n_test": 4032,
+      "duration_s": 488.1
     }
   ],
   "best_acc": 0.5312,
-  "best_fold": -1,
-  "elapsed": 4752.5,
-  "updated_at": "2026-04-18T07:52:14.236748"
+  "elapsed": 5797.2,
+  "done_at": "2026-04-18T08:09:39.626936"
 }
