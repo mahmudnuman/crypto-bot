@@ -29,12 +29,12 @@ venv/
 
 # Logs (keep small summary, ignore big logs)
 cache/*.txt
-cache/*.json
+# cache/*.json  ← allow checkpoint JSONs so training progress pushes to GitHub
 !cache/training_report.json
 
 # Jupyter
 .ipynb_checkpoints/
-*.ipynb
+# *.ipynb  ← intentionally NOT ignored so kaggle_train.ipynb is tracked
 
 # IDE
 .vscode/

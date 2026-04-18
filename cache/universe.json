@@ -1,0 +1,122 @@
+[
+  {
+    "coin": "BTC",
+    "symbol": "BTCUSDT",
+    "rank": 1
+  },
+  {
+    "coin": "ETH",
+    "symbol": "ETHUSDT",
+    "rank": 2
+  },
+  {
+    "coin": "BNB",
+    "symbol": "BNBUSDT",
+    "rank": 3
+  },
+  {
+    "coin": "SOL",
+    "symbol": "SOLUSDT",
+    "rank": 4
+  },
+  {
+    "coin": "XRP",
+    "symbol": "XRPUSDT",
+    "rank": 5
+  },
+  {
+    "coin": "ADA",
+    "symbol": "ADAUSDT",
+    "rank": 6
+  },
+  {
+    "coin": "AVAX",
+    "symbol": "AVAXUSDT",
+    "rank": 7
+  },
+  {
+    "coin": "DOGE",
+    "symbol": "DOGEUSDT",
+    "rank": 8
+  },
+  {
+    "coin": "DOT",
+    "symbol": "DOTUSDT",
+    "rank": 10
+  },
+  {
+    "coin": "LINK",
+    "symbol": "LINKUSDT",
+    "rank": 11
+  },
+  {
+    "coin": "LTC",
+    "symbol": "LTCUSDT",
+    "rank": 12
+  },
+  {
+    "coin": "UNI",
+    "symbol": "UNIUSDT",
+    "rank": 13
+  },
+  {
+    "coin": "ATOM",
+    "symbol": "ATOMUSDT",
+    "rank": 14
+  },
+  {
+    "coin": "ETC",
+    "symbol": "ETCUSDT",
+    "rank": 15
+  },
+  {
+    "coin": "NEAR",
+    "symbol": "NEARUSDT",
+    "rank": 16
+  },
+  {
+    "coin": "ARB",
+    "symbol": "ARBUSDT",
+    "rank": 17
+  },
+  {
+    "coin": "OP",
+    "symbol": "OPUSDT",
+    "rank": 18
+  },
+  {
+    "coin": "APT",
+    "symbol": "APTUSDT",
+    "rank": 19
+  },
+  {
+    "coin": "SUI",
+    "symbol": "SUIUSDT",
+    "rank": 20
+  },
+  {
+    "coin": "INJ",
+    "symbol": "INJUSDT",
+    "rank": 21
+  },
+  {
+    "coin": "FIL",
+    "symbol": "FILUSDT",
+    "rank": 22
+  },
+  {
+    "coin": "XLM",
+    "symbol": "XLMUSDT",
+    "rank": 23
+  },
+  {
+    "coin": "ALGO",
+    "symbol": "ALGOUSDT",
+    "rank": 24
+  },
+  {
+    "coin": "TIA",
+    "symbol": "TIAUSDT",
+    "rank": 25
+  }
+]
