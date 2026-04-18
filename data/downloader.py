@@ -104,44 +104,88 @@ def download_rest(symbol: str, tf: str, start_ms: int, end_ms: int) -> pd.DataFr
 
 
 def fetch_and_store_rest(symbol: str, tf: str) -> None:
-    """Incremental REST download: picks up from last stored candle."""
-    history_start = datetime.now(timezone.utc) - timedelta(days=HISTORY_YEARS * 365)
-    last_ts   = _tz_naive(last_timestamp(symbol, tf))
+    """
+    Download higher-TF candles (1h, 6h, 1d) via data.binance.vision bulk ZIPs.
+    Falls back to REST API only if bulk download returns nothing.
+    Using bulk ZIPs avoids HTTP 451 geo-blocks on Kaggle's US servers.
+    """
+    now        = datetime.now(timezone.utc)
+    now_naive  = datetime.now()
+    start_year = now.year - HISTORY_YEARS
+    last_ts    = _tz_naive(last_timestamp(symbol, tf))
 
-    if last_ts is not None:
-        start_dt = last_ts + timedelta(minutes=1)
-        logger.info(f"[{symbol}/{tf}] Resuming from {start_dt.date()} …")
-    else:
-        start_dt = history_start
-        logger.info(f"[{symbol}/{tf}] Full download from {start_dt.date()} …")
+    # Build list of months to download
+    months = []
+    for year in range(start_year, now.year + 1):
+        for month in range(1, 13):
+            dt = datetime(year, month, 1)
+            if dt > now_naive:
+                break
+            if last_ts is not None:
+                month_end = (dt + timedelta(days=32)).replace(day=1) - timedelta(seconds=1)
+                if pd.Timestamp(month_end) <= last_ts:
+                    continue
+            months.append((year, month))
 
+    if not months:
+        logger.info(f"[{symbol}/{tf}] Already up to date.")
+        state = prog.read()
+        prog.update("downloader",
+            completed_tasks=state["downloader"]["completed_tasks"] + 1,
+            current_task=f"{symbol}/{tf} — already up to date",
+        )
+        return
+
+    logger.info(f"[{symbol}/{tf}] Downloading {len(months)} monthly files via bulk ZIP …")
     prog.update("downloader",
         current_symbol=symbol,
         current_tf=tf,
-        current_task=f"{symbol}/{tf} — REST fetch from {start_dt.date()}",
+        current_task=f"{symbol}/{tf} — bulk ZIP download",
     )
 
-    start_ms = int(start_dt.timestamp() * 1000)
-    end_ms   = int(datetime.now(timezone.utc).timestamp() * 1000)
+    total_rows = 0
+    for year, month in tqdm(months, desc=f"{symbol}/{tf}", unit="month"):
+        url  = _bulk_zip_url(symbol, tf, year, month)
+        resp = requests.get(url, timeout=60)
+        if resp.status_code == 404:
+            continue   # month not yet published
+        if resp.status_code != 200:
+            logger.warning(f"[{symbol}/{tf}] Bulk HTTP {resp.status_code}: {url}")
+            continue
+        df = _parse_zip(resp.content)
+        if df is not None and not df.empty:
+            save(symbol, tf, df)
+            total_rows += len(df)
 
-    df = download_rest(symbol, tf, start_ms, end_ms)
-    if df.empty:
-        logger.warning(f"[{symbol}/{tf}] No data returned.")
+    if total_rows == 0:
+        # Fallback: try REST API (works on non-geo-blocked environments)
+        logger.warning(f"[{symbol}/{tf}] Bulk download returned nothing, trying REST …")
+        history_start = datetime.now(timezone.utc) - timedelta(days=HISTORY_YEARS * 365)
+        start_dt  = history_start if last_ts is None else (last_ts + timedelta(minutes=1))
+        start_ms  = int(start_dt.timestamp() * 1000)
+        end_ms    = int(now.timestamp() * 1000)
+        df_rest   = download_rest(symbol, tf, start_ms, end_ms)
+        if not df_rest.empty:
+            save(symbol, tf, df_rest)
+            total_rows = len(df_rest)
+            logger.success(f"[{symbol}/{tf}] REST fallback: {total_rows:,} candles.")
+        else:
+            logger.warning(f"[{symbol}/{tf}] No data returned from bulk or REST.")
     else:
-        save(symbol, tf, df)
-        logger.success(f"[{symbol}/{tf}] Stored {len(df):,} candles.")
+        logger.success(f"[{symbol}/{tf}] Stored {total_rows:,} candles total.")
 
     state = prog.read()
     prog.update("downloader",
         completed_tasks=state["downloader"]["completed_tasks"] + 1,
-        current_task=f"{symbol}/{tf} — done ({len(df):,} candles)",
+        current_task=f"{symbol}/{tf} — done ({total_rows:,} candles)",
     )
 
 
-# ── Bulk ZIP downloader (5m) ──────────────────────────────────────────
+# ── Bulk ZIP downloader (5m + higher TFs via data.binance.vision) ────
 
-def _bulk_zip_url(symbol: str, year: int, month: int) -> str:
-    return f"{BINANCE_BULK_BASE}/{symbol}/5m/{symbol}-5m-{year}-{month:02d}.zip"
+def _bulk_zip_url(symbol: str, tf: str, year: int, month: int) -> str:
+    """URL for monthly bulk ZIP on data.binance.vision (works for all spot TFs)."""
+    return f"{BINANCE_BULK_BASE}/{symbol}/{tf}/{symbol}-{tf}-{year}-{month:02d}.zip"
 
 
 def _parse_zip(content: bytes) -> pd.DataFrame | None:
@@ -188,7 +232,7 @@ def _parse_zip(content: bytes) -> pd.DataFrame | None:
 
 def fetch_and_store_5m_bulk(symbol: str) -> None:
     """
-    Download 5m candles via monthly bulk ZIPs.
+    Download 5m candles via monthly bulk ZIPs from data.binance.vision.
     Resume-safe: skips years already fully stored.
     """
     now          = datetime.now(timezone.utc)
@@ -228,11 +272,11 @@ def fetch_and_store_5m_bulk(symbol: str) -> None:
             total_months=len(months),
             current_task=f"{symbol}/5m  {year}-{month:02d}  ({i+1}/{len(months)})",
         )
-        resp = requests.get(_bulk_zip_url(symbol, year, month), timeout=60)
+        resp = requests.get(_bulk_zip_url(symbol, '5m', year, month), timeout=60)
         if resp.status_code == 404:
             continue
         if resp.status_code != 200:
-            logger.warning(f"Bulk HTTP {resp.status_code}: {_bulk_zip_url(symbol, year, month)}")
+            logger.warning(f"Bulk HTTP {resp.status_code}: {_bulk_zip_url(symbol, '5m', year, month)}")
             continue
         total_bytes += len(resp.content)
         try:
