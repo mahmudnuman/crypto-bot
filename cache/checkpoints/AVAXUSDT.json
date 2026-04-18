@@ -9,10 +9,28 @@
       "n_train": 255000,
       "n_test": 4032,
       "duration_s": 490.1
+    },
+    {
+      "fold": 1,
+      "train_acc": 0.5763,
+      "test_acc": 0.5444,
+      "mape": 0.017,
+      "n_train": 255000,
+      "n_test": 4032,
+      "duration_s": 474.3
+    },
+    {
+      "fold": 2,
+      "train_acc": 0.5734,
+      "test_acc": 0.5089,
+      "mape": 0.3704,
+      "n_train": 255000,
+      "n_test": 4032,
+      "duration_s": 475.6
     }
   ],
-  "best_acc": 0.529,
-  "best_fold": 0,
-  "elapsed": 540.5,
-  "updated_at": "2026-04-18T09:52:48.810860"
+  "best_acc": 0.5444,
+  "best_fold": -1,
+  "elapsed": 1538.7,
+  "updated_at": "2026-04-18T10:09:27.078060"
 }
