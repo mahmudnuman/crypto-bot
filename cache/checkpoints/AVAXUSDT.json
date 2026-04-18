@@ -1,0 +1,18 @@
+{
+  "status": "in_progress",
+  "folds": [
+    {
+      "fold": 0,
+      "train_acc": 0.5788,
+      "test_acc": 0.529,
+      "mape": 0.0271,
+      "n_train": 255000,
+      "n_test": 4032,
+      "duration_s": 490.1
+    }
+  ],
+  "best_acc": 0.529,
+  "best_fold": 0,
+  "elapsed": 540.5,
+  "updated_at": "2026-04-18T09:52:48.810860"
+}
