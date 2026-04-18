@@ -1,0 +1,17 @@
+{
+  "status": "done",
+  "folds": [
+    {
+      "fold": 0,
+      "train_acc": 0.5459,
+      "test_acc": 0.5191,
+      "mape": 0.091,
+      "n_train": 255000,
+      "n_test": 4032,
+      "duration_s": 480.2
+    }
+  ],
+  "best_acc": 0.5191,
+  "elapsed": 507.2,
+  "done_at": "2026-04-18T12:58:09.038086"
+}
